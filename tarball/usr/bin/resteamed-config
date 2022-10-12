@@ -1,0 +1,52 @@
+#!/bin/sh
+
+config_dir="${XDG_CONF_DIR:-"$HOME/.config"}/resteamed/"
+
+case $1 in
+
+# 	get)
+#
+# 		case $2 in
+#
+# 			session_manager)
+# 				source "$config_dir/session_manager"
+# 			;;
+# 		esac
+# 	;;
+
+# Check config files
+	check)
+	if [ ! -d  "$config_dir" ]; then
+		resteamed-config generate all
+	fi
+		case $2 in
+
+			session_manager)
+				if [ ! -f  "$config_dir/session_manager.conf" ]; then
+					resteamed-config generate session_manager
+				fi
+			;;
+
+		esac
+	;;
+
+	# Recreate a missing config
+	generate)
+		case $2 in
+
+			# All configuration files (overwrites all)
+			all)
+				mkdir "$config_dir"
+				resteamed-config generate session_manager
+			;;
+
+			session_manager)
+				{
+					echo "preferred_session='startplasma-x11'"
+				} > "$config_dir/session_manager.conf"
+			;;
+
+		esac
+	;;
+
+esac
